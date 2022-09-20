@@ -1,0 +1,11 @@
+FROM golang:latest
+
+RUN export GOPROXY=https://proxy.golang.com.cn,direct \
+&& GO111MODULE=on go install github.com/jaeles-project/gospider@latest
+
+FROM alpine:latest
+
+COPY --from=builder /go/bin/gospider /tools/gospider
+WORKDIR /tools
+ENTRYPOINT ["./gospider"]
+CMD ["-h"]
