@@ -2,8 +2,8 @@
 
 export MYTAG=0n100
 
-docker build  -t 0n100/gospider:latest  -f  Dockerfile.gospider  --build-arg GOLANG_ALPINE_VERSION=alpine   .
+docker build  -f  Dockerfile.gospider -t gospider:latest  .
+docker login --username XXXX
+docker  tag 0n100/gospider:latest  gospider:latest  
 
-```
- docker build -t whenry/fedora-jboss:latest -t whenry/fedora-jboss:v2.1 .
-```
+docker run -it --name myspider  gospider 
