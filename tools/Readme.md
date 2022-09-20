@@ -5,11 +5,13 @@
 
 #### Push
 ```
-export MYTAG=0n100
+export MYTAG=0n100  #Change to yours
 
 docker login --username XXXX
-docker tag 0n100/gospider:latest  gospider:latest  
+docker tag $MYTAG/gospider:latest  gospider:latest  
 ```
 
 #### Run
 `docker run -it --name myspider  gospider `
+
+`docker run -it --name x-crack1  x-crack `
