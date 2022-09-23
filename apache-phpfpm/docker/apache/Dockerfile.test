@@ -1,0 +1,13 @@
+FROM httpd:2.4
+COPY ./index.html /usr/local/apache2/htdocs/ 
+EXPOSE 80
+ARG WEB_USER
+ARG WEB_GROUP
+ARG APACHE_ROOT_DIR
+ 
+#COPY httpd-vhosts.conf ${APACHE_ROOT_DIR}/conf/extra/httpd-vhosts.conf
+COPY httpd.conf ${APACHE_ROOT_DIR}/conf/httpd.conf
+
+#RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+#CMD ["apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ["bash"]
