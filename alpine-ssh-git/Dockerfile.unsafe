@@ -1,3 +1,5 @@
+#Unsafe docker file. Shouldn't be used in production.
+#举例用的不安全做法，不要用这种方式加入隐私数据。
 FROM alpine:latest
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
@@ -12,7 +14,7 @@ RUN apk add --update \
   openssh-client-common
 
 RUN mkdir /root/.ssh/
-ADD id_rsa  /root/.ssh/id_rsa
+ADD ./id_rsa  /root/.ssh/id_rsa
 
 RUN chmod 0600 /root/.ssh/id_rsa \
 && touch /root/.ssh/known_hosts \
