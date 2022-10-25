@@ -6,6 +6,8 @@
 
 使用：`docker-compose up -d `
 
+如果需要修改php版本，则编辑`dockerfile.php`，把开头句改为：`php:5.4.45-fpm`等。
+
 ### 题外话
 
 在练习使用curl的丰富功能。作者描述的数据提交，尝试用curl测试了一遍，大致如下，也记录一下。
