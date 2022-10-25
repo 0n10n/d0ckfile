@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>首页</title>
+
+<meta http-equiv="keywords" content=" prompt page">
+<meta http-equiv="description" content="默认首页">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+<style type="text/css">
+a,fieldset,img {
+	border: 0;
+}
+
+a {
+	color: #221919;
+	text-decoration: none;
+	outline: none;
+	opacity: 1;
+	display: block;
+}
+
+a.link {
+	text-shadow: 0px 1px 2px white;
+	font-weight: 600;
+	color: #3366cc;
+	opacity: 1;
+}
+
+a:hover {
+	color: #3366cc;
+	text-decoration: underline;
+}
+
+body {
+	font-size: 24px;
+	color: #B7AEB4;
+}
+
+body a.link,body h1,body p {
+	-webkit-transition: opacity 0.5s ease-in-out;
+	-moz-transition: opacity 0.5s ease-in-out;
+	transition: opacity 0.5s ease-in-out;
+}
+
+#wrapper {
+	text-align: center;
+	margin: 100px auto;
+	width: 800px;
+}
+
+h1 {
+	text-shadow: 0px 1px 2px white;
+	font-size: 24px;
+	opacity: 0;
+}
+
+img {
+	-webkit-transition: opacity 1s ease-in-out;
+	-moz-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+	height: 200px;
+	width: 200px;
+	opacity: 0;
+}
+
+p {
+	text-shadow: 0px 1px 2px white;
+	font-weight: normal;
+	font-weight: 200;
+	opacity: 0;
+}
+
+.fade {
+	opacity: 1;
+}
+
+@media only screen and (min-device-width:320px) and
+	(max-device-width:480px) {
+	#wrapper {
+		margin: 40px auto;
+		text-align: center;
+		width: 280px;
+	}
+}
+</style>
+</head>
+<body>
+	<div id="wrapper">
+			<img class="fade"  src="data:image/jpeg;base64,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">
+
+		<div>
+			<h1 class="fade">欢迎，一切就绪！</h1>
+			<p class="fade"> <a href="get.html">GET</a> <a href="post.html">POST</a> <a href="upload.html">UPLOAD</a> <a href="i.php">INFO</a> </p>
+		</div>
+	</div>
+</body>
+</html>

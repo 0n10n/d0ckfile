@@ -1,0 +1,47 @@
+version: '3.8'
+
+networks:
+  web-network:
+  
+services:
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: stack-php-fpm
+    volumes:
+       - ./src:/var/www/html
+      
+    networks:
+      - web-network
+
+  mysql:
+    image: mysql:5.7.37
+    container_name: stack-mysql
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./sql/dvwa.sql:/docker-entrypoint-initdb.d/dvwa.sql
+    environment:
+      MYSQL_DATABASE: dvwa
+      MYSQL_USER: danzhu
+      MYSQL_PASSWORD: 123456
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - web-network
+      
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: stack-nginx
+    volumes:
+      - ./src:/var/www/html
+      
+    ports:
+      - "8080:80"
+    networks:
+      - web-network
+    depends_on:
+      - php-fpm
+      - mysql

@@ -1,0 +1,8 @@
+FROM nginx:stable-alpine
+
+ARG ZIPFILE=Local-file-disclosure-SQL-Injection-Lab-master
+
+#COPY $ZIPFILE /var/www/html
+COPY config/default.conf /etc/nginx/conf.d/ 
+
+EXPOSE 80

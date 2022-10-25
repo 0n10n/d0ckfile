@@ -1,0 +1,54 @@
+version: '3.8'
+
+networks:
+  web-network:
+  
+services:
+
+  php-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    image: php-fpm
+    container_name: stack-php-fpm
+    volumes:
+      - ./Local-file-disclosure-SQL-Injection-Lab-master:/var/www/html
+      
+    networks:
+      - web-network
+
+  mysql:
+    image: mysql:5.7.40-oracle
+    container_name: stack-mysql
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./sql/dsqli.sql:/docker-entrypoint-initdb.d/dsqli.sql
+    environment:
+      MYSQL_DATABASE: dsqli
+      MYSQL_USER:  dsqli
+      MYSQL_PASSWORD: icadsqli
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - web-network
+      
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    image: nginx
+    container_name: stack-nginx
+
+    volumes:
+      - ./Local-file-disclosure-SQL-Injection-Lab-master:/var/www/html
+      
+    ports:
+      - "8080:80"
+    networks:
+      - web-network
+    depends_on:
+      - php-fpm
+      - mysql
+
+volumes:
+  webroot:
+    driver: local      
