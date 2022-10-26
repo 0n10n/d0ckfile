@@ -9,11 +9,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.php
+      args:
+        PHP_INI: php.ini-production
+
     image: php-fpm
     container_name: stack-php-fpm
     volumes:
       - ./Local-file-disclosure-SQL-Injection-Lab-master:/var/www/html
-      
+      - ./config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - BASE_DIR=/var/www/html
+            
     networks:
       - web-network
 

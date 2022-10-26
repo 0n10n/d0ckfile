@@ -9,16 +9,28 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.php
+      args:
+        PHP_INI: php.ini-production
+        
     container_name: stack-php-fpm
     volumes:
-       - ./src:/var/www/html
+      - ./config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./src:/var/www/html
+      
+    environment:
+      - BASE_DIR=/var/www/html
+
       
     networks:
       - web-network
 
   mysql:
-    image: mysql:5.7.37
-    container_name: stack-mysql
+    image: mariadb:10.5.8
+    container_name: stack-mariadb
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"    
     volumes:
       - ./data:/var/lib/mysql
       - ./sql/dvwa.sql:/docker-entrypoint-initdb.d/dvwa.sql
@@ -37,7 +49,10 @@ services:
     container_name: stack-nginx
     volumes:
       - ./src:/var/www/html
-      
+
+    environment:
+      - ARG2=${ARG1}
+    
     ports:
       - "8080:80"
     networks:
