@@ -10,7 +10,8 @@ services:
       context: .
       dockerfile: Dockerfile.php
       args:
-        PHP_INI: php.ini-production
+#        PHP_INI: php.ini-production
+        PHP_INI: php.ini-development
         
     container_name: stack-php-fpm
     volumes:
