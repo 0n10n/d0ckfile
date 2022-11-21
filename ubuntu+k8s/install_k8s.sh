@@ -1,6 +1,6 @@
 #!/bin/bash
 #************************************************************************************************
-# Author: Marshall
+# Original Author: Marshall
 # Date: 2022-10-30
 # FileName: install_kubernetes.sh
 # URL: https://www.aledk.com
@@ -8,15 +8,21 @@
 # Copyright(C): 2022 All rights reserved
 #************************************************************************************************
 #说明：安装 Kubernetes 服务器内存建议至少2G
-KUBE_VERSION="1.25.3"
+
+KUBE_VERSION=1.25.4
+
+#如果不想手工选择用哪个版本，就把以下一行注释掉。就会自动从网页内容判断当前最新kube*的版本。
+#KUBE_VERSION=$(curl https://kubernetes.io/releases/ 2>&1 |grep  "Patch Releases:"|head -1 |grep -oE "class=release-inline-value>.*?\s\("|awk -F\>  '{ print $2 }'|awk '{ print $1 }')
+
 KUBE_VERSION2=$(echo $KUBE_VERSION |awk -F. '{print $2}')
 
 MASTER1_IP=192.168.10.12
 NODE1_IP=192.168.10.17
 
-MASTER1=uhost
+MASTER1=master
 NODE1=node1
 
+#以下两行不建议修改，因为要配合后面的flannel插件，这是默认的flannel网络设置
 POD_NETWORK="10.244.0.0/16"
 SERVICE_NETWORK="10.96.0.0/12"
 
@@ -29,6 +35,7 @@ LOCAL_IP=`hostname -I |awk '{print $1}'`
 
 COLOR_SUCCESS="echo -e \\033[1;32m"
 COLOR_FAILURE="echo -e \\033[1;31m"
+COLOR_PROMPT="echo -e \\033[1;36m"
 END="\033[m" 
 
 color () {
@@ -87,7 +94,9 @@ install_docker () {
     cat > /etc/docker/daemon.json << EOF
 {
 "registry-mirrors": [
-"https://docker.mirrors.ustc.edu.cn",
+"https://uy35zvn6.mirror.aliyuncs.com",
+"https://mirror.ccs.tencentyun.com",
+"https://reg-mirror.qiniu.com",
 "https://hub-mirror.c.163.com",
 "https://reg-mirror.qiniu.com",
 "https://registry.docker-cn.com"
@@ -132,15 +141,47 @@ install_cri_dockerd () {
 
 }
 
+retag () {
+    ${COLOR_SUCCESS}"提前拉取镜像和retag..."${END}
+
+    ORIGINAL_HUB=k8s.gcr.io
+    NEW_HUB=registry.aliyuncs.com/google_containers
+
+    for url in $(kubeadm config images list); do
+    if [[ "$url" == *"$ORIGINAL_HUB"* ]]; then
+        ${COLOR_SUCCESS}"Pull..."${url/$ORIGINAL_HUB/$NEW_HUB}
+        docker pull ${url/$ORIGINAL_HUB/$NEW_HUB}
+        docker tag ${url/$ORIGINAL_HUB/$NEW_HUB} $url
+    fi
+    done
+}
+
 kubernetes_init () {
+
+    ENDPOINT='--cri-socket unix:///var/run/cri-dockerd.sock'
+    echo -e '\r\n'
+    while true; do
+        ${COLOR_PROMPT}[1]${END} unix:///var/run/cri-dockerd.sock
+        ${COLOR_PROMPT}[2]${END} unix:///run/containerd/containerd.sock
+        ${COLOR_PROMPT}[3]${END} unix:///var/run/dockershim.sock
+        read -r -p "请选择哪种runtime endpoint[1/2/3]: " answer
+        case $answer in
+            [1]* ) ENDPOINT='--cri-socket=unix:///var/run/cri-dockerd.sock'; break;;
+            [2]* ) ENDPOINT='--container-runtime-endpoint=unix:///run/containerd/containerd.sock'; break;;
+            [3]* ) ENDPOINT=''; break;;
+            * ) echo "Please answer 1/2/3.";;
+        esac
+    done
+
     ${COLOR_SUCCESS}"开始初始化k8s..."${END}
     kubeadm init \
---kubernetes-version=v${KUBE_VERSION} \
---image-repository registry.aliyuncs.com/google_containers \
---service-cidr=${SERVICE_NETWORK} \
---pod-network-cidr=${POD_NETWORK} \
---cri-socket unix:///run/cri-dockerd.sock \
---v=5
+    --control-plane-endpoint=${MASTER1_IP} \
+    --kubernetes-version=v${KUBE_VERSION} \
+    --image-repository registry.aliyuncs.com/google_containers \
+    --service-cidr=${SERVICE_NETWORK} \
+    --pod-network-cidr=${POD_NETWORK} \
+    ${ENDPOINT} \
+    --v=5
 }
 
 reset_kubernetes () {
@@ -158,6 +199,7 @@ main () {
                 install_docker
                 install_kubeadm
                 install_cri_dockerd
+                retag
                 kubernetes_init
                 break
                 ;;
