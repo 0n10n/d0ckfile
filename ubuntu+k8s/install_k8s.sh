@@ -154,13 +154,15 @@ install_cri_dockerd () {
 
 retag () {
     ${COLOR_SUCCESS}"提前拉取镜像和retag..."${END}
-
-    ORIGINAL_HUB=k8s.gcr.io
-    NEW_HUB=registry.aliyuncs.com/google_containers
+set -x
+    #ORIGINAL_HUB=k8s.gcr.io
+    ORIGINAL_HUB=gistry.k8s.io
+    NEW_HUB=gistry.aliyuncs.com/google_containers
 
     for url in $(kubeadm config images list); do
     if [[ "$url" == *"$ORIGINAL_HUB"* ]]; then
-        ${COLOR_SUCCESS}"Pull..."${url/$ORIGINAL_HUB/$NEW_HUB}
+        ${COLOR_SUCCESS}"Pull..."${url/$ORIGINAL_HUB/$NEW_HUB}${END}
+        echo docker pull ${url/$ORIGINAL_HUB/$NEW_HUB}
         docker pull ${url/$ORIGINAL_HUB/$NEW_HUB}
         docker tag ${url/$ORIGINAL_HUB/$NEW_HUB} $url
     fi
@@ -215,11 +217,11 @@ main () {
                 break
                 ;;
             "加入kubernetes集群")
-                install_prepare
-                install_docker
-                install_kubeadm
-                install_cri_dockerd
-				retag
+                #install_prepare
+                #install_docker
+                #install_kubeadm
+                #install_cri_dockerd
+		retag
                 ${COLOR_SUCCESS}"加入kubernetes前的准备工作已完成，请执行kubeadm jion命令！"${END}
                 break
                 ;;

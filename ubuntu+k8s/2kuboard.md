@@ -1,6 +1,9 @@
+# Kuboard的安装
+
 官方：
 
 https://kuboard.cn/install/v3/install-built-in.html#%E9%83%A8%E7%BD%B2%E8%AE%A1%E5%88%92
+
 
 实际命令行：
 
