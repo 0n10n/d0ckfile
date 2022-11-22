@@ -156,8 +156,8 @@ retag () {
     ${COLOR_SUCCESS}"提前拉取镜像和retag..."${END}
 set -x
     #ORIGINAL_HUB=k8s.gcr.io
-    ORIGINAL_HUB=gistry.k8s.io
-    NEW_HUB=gistry.aliyuncs.com/google_containers
+    ORIGINAL_HUB=${kubeadm config images list|head -1|awk -F/ '{ print $1 }'}
+    NEW_HUB=registry.aliyuncs.com/google_containers
 
     for url in $(kubeadm config images list); do
     if [[ "$url" == *"$ORIGINAL_HUB"* ]]; then
