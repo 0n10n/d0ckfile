@@ -156,16 +156,14 @@ retag () {
     ${COLOR_SUCCESS}"提前拉取镜像和retag..."${END}
 set -x
     #ORIGINAL_HUB=k8s.gcr.io
-    ORIGINAL_HUB=${kubeadm config images list|head -1|awk -F/ '{ print $1 }'}
+    ORIGINAL_HUB=$(kubeadm config images list|head -1|awk -F/ '{ print $1 }')
     NEW_HUB=registry.aliyuncs.com/google_containers
 
     for url in $(kubeadm config images list); do
-    if [[ "$url" == *"$ORIGINAL_HUB"* ]]; then
-        ${COLOR_SUCCESS}"Pull..."${url/$ORIGINAL_HUB/$NEW_HUB}${END}
-        echo docker pull ${url/$ORIGINAL_HUB/$NEW_HUB}
-        docker pull ${url/$ORIGINAL_HUB/$NEW_HUB}
-        docker tag ${url/$ORIGINAL_HUB/$NEW_HUB} $url
-    fi
+		${COLOR_SUCCESS}"Pull..."${url/${ORIGINAL_HUB}/${NEW_HUB}} ${END}
+		echo docker pull ${url/${ORIGINAL_HUB}/$NEW_HUB}
+		docker pull ${url/${ORIGINAL_HUB}/$NEW_HUB}
+		docker tag ${url/${ORIGINAL_HUB}/$NEW_HUB} $url
     done
 }
 
@@ -217,10 +215,10 @@ main () {
                 break
                 ;;
             "加入kubernetes集群")
-                #install_prepare
-                #install_docker
-                #install_kubeadm
-                #install_cri_dockerd
+                install_prepare
+                install_docker
+                install_kubeadm
+                install_cri_dockerd
 		retag
                 ${COLOR_SUCCESS}"加入kubernetes前的准备工作已完成，请执行kubeadm jion命令！"${END}
                 break
