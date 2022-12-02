@@ -133,7 +133,7 @@ EOF
     sleep 6
     
     #安装指定版本
-    apt install -y kubeadm=${KUBE_VERSION}-00 kubelet=${KUBE_VERSION}-00 kubectl=${KUBE_VERSION}-00
+    apt install -y --allow-downgrades kubeadm=${KUBE_VERSION}-00 kubelet=${KUBE_VERSION}-00 kubectl=${KUBE_VERSION}-00
     [ $? -eq 0 ] && { color "安装 kubeadm 成功！" 0; sleep 1;} || { color "安装 kubeadm 失败！" 1; exit 2; }
 
 }
