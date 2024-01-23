@@ -1,0 +1,12 @@
+confdir: /home/mitmproxy
+console_eventlog_verbosity: info
+console_mouse: false
+console_palette: dark
+block_global: false
+flow_detail: 3
+ssl_insecure: true
+termlog_verbosity: info
+anticache: true
+scripts: 
+  - /scripts/script.py
+view_filter: "~dst baidu.com|apple.com"

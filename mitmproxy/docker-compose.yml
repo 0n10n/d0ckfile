@@ -1,0 +1,16 @@
+version: "3"
+services:
+ mitmdump:
+   image: "mitmproxy/mitmproxy"
+   container_name: mitmdump
+   tty: true 
+   stdin_open: true
+   ports:
+     - "8080:8080/tcp"
+     - "8081:8081/tcp"
+   volumes:
+     - "./mitmproxy:/home/mitmproxy/.mitmproxy"
+     - "./logs:/logs"
+     - "./scripts:/scripts"
+   command: "mitmdump -w logs/traffic_dump_%Y%m%d"
+

@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {}
+  labels:
+    app: filebrowser-app
+  name: filebrowser
+  namespace: test
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: filebrowser-app
+  template:
+    metadata:
+      labels:
+        app: filebrowser-app
+    spec:
+      containers:
+        - image: filebrowser/filebrowser
+          imagePullPolicy: Always
+          name: filebrowser
+          volumeMounts:
+            - mountPath: /srv
+              name: root
+      volumes:
+        - hostPath:
+            path: /srv
+            type: DirectoryOrCreate
+          name: root
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations: {}
+  labels:
+    app: filebrowser-app
+  name: filebrowser
+  namespace: test
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+    - nodePort: 30090
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: filebrowser-app
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  type: NodePort

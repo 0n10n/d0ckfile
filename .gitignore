@@ -2,3 +2,6 @@
 */node_modules
 */data
 ubuntu+k8s/kube-flannel-io.yml
+mitmproxy/logs/*
+mitmproxy/__pycache__*
+*.swp
