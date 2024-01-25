@@ -1,13 +1,8 @@
 # mitmproxy 练手
 
-## Docker 版安装使用
+## 1，Docker 版安装使用
 
 不知道咋搞的，真实OS下装 mitmproxy 总是各种报错。算了，放弃了。只好搞个Docker版玩一下。docker命令行版虽然也可以，但命令行参数每次都记不住啊。还是docker-compose适合俺。
-
-启动：
-```bash
-$ docker-compose up 
-```
 
 配置文件：`mitmproxy/config.yaml`，内容：
 
@@ -16,6 +11,7 @@ confdir: /home/mitmproxy
 console_eventlog_verbosity: info
 console_mouse: false
 console_palette: dark
+listen_port: 8080
 block_global: false
 flow_detail: 3
 ssl_insecure: true
@@ -24,7 +20,12 @@ anticache: true
 view_filter: "~dst baidu.com|bing.com"
 ```
 
-## curl 使用
+启动：
+```bash
+$ docker-compose up 
+```
+
+## 2，curl 使用
 
 无需用户名/密码的情况：
 
@@ -55,7 +56,7 @@ alias unsetproxy="unset http_proxy; unset https_proxy; echo 'HTTP/ Proxy off';"
 
 
 
-## 文档&参考
+## 3，文档&参考
 
 Documentation
 
