@@ -40,11 +40,17 @@ curl --proxy "http://user:pwd@mitmproxy_ip:8080" "http://target_server.org/"
 curl --proxy "user:pwd@mitmproxy_ip:8080" "http://target_server.org/"
 ```
 
-对不能在命令行参数里指定代理的程序，可以修改系统变量`http_proxy`和`https_proxy`
+对不能在命令行参数里指定代理的程序，可以修改系统变量`http_proxy`和`https_proxy`（永久有效）
 
 ```
 export http_proxy="http://user:pwd@mitmproxy_ip:8080"
 export https_proxy="http://user:pwd@mitmproxy_ip:8080"
+```
+
+方便临时使用的做法：
+```
+alias setproxy="export http_proxy=socks5://127.0.0.1:1024; export https_proxy=$http_proxy; echo 'HTTP/S Proxy on';"
+alias unsetproxy="unset http_proxy; unset https_proxy; echo 'HTTP/ Proxy off';"
 ```
 
 
